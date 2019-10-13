@@ -33,6 +33,9 @@ end
 
 class BinarySearchTree
   attr_reader :root
+
+  DEPTH_TRAVERSAL_MODES = [:inorder,:preorder,:postorder]
+
   def initialize(array)
     array.sort!
     array.uniq!
@@ -87,6 +90,8 @@ class BinarySearchTree
     node
   end
 
+
+
   def traverse_levelorder_recursive(current = root, queue = [], &block)
     return if current.nil?
 
@@ -104,6 +109,26 @@ class BinarySearchTree
       yield(current)
       queue << current.left if current.left
       queue << current.right if current.right
+    end
+  end
+
+
+  [:inorder,:preorder,:postorder].each do |traversal_mode|
+    left_method = "traverse_#{traversal_mode}(node.left, &block)"
+    right_method = "traverse_#{traversal_mode}(node.right, &block)"
+    blok = "block.call(node)"
+
+    traversal_methods = {
+      inorder:    [left_method, blok, right_method],
+      preorder:   [blok, left_method, right_method],
+      postorder:  [left_method, right_method, blok],
+    }
+
+    define_method :"traverse_#{traversal_mode}_meta" do |node = root, &block|
+      return if node.nil?
+
+      traversal_methods[traversal_mode].each{ |method| eval(method) }
+      return
     end
   end
 
@@ -169,7 +194,7 @@ class BinarySearchTree
 
   def length
     count = 0
-    traverse_levelorder_iterative {count +=1 }
+    traverse_levelorder_iterative { count +=1 }
     count
   end
 
@@ -187,12 +212,40 @@ class BinarySearchTree
       end
     end
   end
+
+  def is_balanced?
+    left_depth = depth(root.left)
+    right_depth = depth(root.right)
+    (left_depth - right_depth).abs < 1
+  end
+
+  def print_dump
+    print_proc = Proc.new do |node|
+      print "#{node.data} "
+    end
+
+    puts "#{traverse_levelorder_recursive(&print_proc)} - levelorder recursive"
+    puts "#{traverse_levelorder_iterative(&print_proc)} - levelorder iterative"
+    puts "#{traverse_inorder(&print_proc)} - inorder"
+    puts "#{traverse_inorder_meta(&print_proc)} - inorder_meta"
+    puts "#{traverse_preorder(&print_proc)} - preorder"
+    puts "#{traverse_preorder_meta(&print_proc)} - preorder_meta"
+    puts "#{traverse_postorder(&print_proc)} - postorder"
+    puts "#{traverse_postorder_meta(&print_proc)} - postorder_meta"
+  end
 end
 
+### A driver to show functionality since I was too lazy to rspec it...
+puts
 array = [1,7,4,23,8,9,4,3,5,7,9,67,6345,324,6344]
-# 50.times{ array << rand(1..1000)}
-# array = [2, 5, 1, 3, 4]
+puts "Creating balanced tree from array: #{array.inspect}"
+puts
 tree = BinarySearchTree.new(array)
+
+tree.print_dump
+puts
+puts "Checking if tree is balanced: #{tree.is_balanced?}"
+puts "Unbalancing the tree..."
 tree.insert(22)
 tree.insert(5235)
 tree.insert(233)
@@ -201,29 +254,14 @@ tree.insert(29)
 tree.insert(92)
 tree.insert(45)
 tree.insert(511)
-print_proc = Proc.new do |node|
-  print "#{node.data} "
-end
+puts "Checking if tree is balanced: #{tree.is_balanced?}"
+puts
+tree.print_dump
+puts
+puts "Rebalancing tree..."
+tree.rebalance!
+puts "checking if tree is balanced: #{tree.is_balanced?}"
+puts
+tree.print_dump
 
-puts "levelorder recursive:"
-puts tree.traverse_levelorder_recursive(&print_proc)
-puts "levelorder iterative:"
-puts tree.traverse_levelorder_iterative(&print_proc)
-puts "inorder:"
-puts tree.traverse_inorder(&print_proc)
-puts "preorder:"
-puts tree.traverse_preorder(&print_proc)
-puts "postorder:"
-puts tree.traverse_postorder(&print_proc)
-binding.pry
-tree.depth
-tree.delete(5)
-# tree.rebalance!
 
-=begin
-print_tree
-#rebalance
-#height(node)
-#width(level)
-#rebalance
-=end
