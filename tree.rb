@@ -172,6 +172,21 @@ class BinarySearchTree
     traverse_levelorder_iterative {count +=1 }
     count
   end
+
+  def depth(node = root)
+    if node.nil?
+      return 0
+    else
+      left_depth = depth(node.left)
+      right_depth = depth(node.right)
+
+      if (left_depth > right_depth)
+        left_depth+1
+      else
+        right_depth+1
+      end
+    end
+  end
 end
 
 array = [1,7,4,23,8,9,4,3,5,7,9,67,6345,324,6344]
@@ -201,7 +216,7 @@ puts tree.traverse_preorder(&print_proc)
 puts "postorder:"
 puts tree.traverse_postorder(&print_proc)
 binding.pry
-tree.print_tree
+tree.depth
 tree.delete(5)
 # tree.rebalance!
 
