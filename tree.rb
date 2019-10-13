@@ -1,40 +1,16 @@
-require 'pry'
+require './node.rb'
 
 class NodeNotFound < StandardError
-    def initialize(value)
-      @value = value
-    end
-    def message
-      "There is no node in tree with a value of '#{@value.inspect}'"
-    end
-end
-
-class Node
-  include Comparable
-  attr_accessor :data, :parent, :left, :right
-  def initialize(data)
-    @data = data
-    @left = left
-    @right = right
+  def initialize(value)
+    @value = value
   end
-
-  def <=>(other)
-    data <=> other.data
-  end
-
-  def leaf?
-    left.nil? && right.nil?
-  end
-
-  def single_parent?
-    left.nil? && !right.nil? || !left.nil? && right.nil?
+  def message
+    "There is no node in tree with a value of '#{@value.inspect}'"
   end
 end
 
 class BinarySearchTree
   attr_reader :root
-
-  DEPTH_TRAVERSAL_MODES = [:inorder,:preorder,:postorder]
 
   def initialize(array)
     array.sort!
@@ -190,12 +166,6 @@ class BinarySearchTree
     traverse_levelorder_iterative {|node| array << node.data}
     array.sort!
     @root = build_tree(array)
-  end
-
-  def length
-    count = 0
-    traverse_levelorder_iterative { count +=1 }
-    count
   end
 
   def depth(node = root)
