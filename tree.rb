@@ -1,18 +1,15 @@
 require './node.rb'
 
-class NodeNotFound < StandardError
-  def initialize(value)
-    @value = value
-  end
-  def message
-    "There is no node in tree with a value of '#{@value.inspect}'"
-  end
-end
+class NodeNotFound < StandardError;end
+class DuplicateInsertion < StandardError;end
 
 class BinarySearchTree
   attr_reader :root
 
   def initialize(array)
+    raise ArgumentError, "Tree must be initialized with an array" unless array.is_a?(Array)
+    raise ArgumentError, "Tree must be intialized with numbers" unless array.all?{ |element| element.is_a?(Numeric) }
+
     array.sort!
     array.uniq!
     @root = build_tree(array)
@@ -29,6 +26,8 @@ class BinarySearchTree
   end
 
   def insert(value, node = root)
+    raise DuplicateInsertion, "#{value} already exists in Tree" if node.data == value
+
     node = Node.new(value) if node.nil?
     if value < node.data
       if node.left.nil?
@@ -43,7 +42,7 @@ class BinarySearchTree
         insert(value, node.right )
       end
     end
-
+    self
   end
 
   def delete(value, node = root)
@@ -134,7 +133,7 @@ class BinarySearchTree
   end
 
   def find(value, node = root)
-    raise NodeNotFound.new(value) if node.nil?
+    raise NodeNotFound, "#{value} isn't in Tree" if node.nil?
     return node if node.data == value
 
     if value < node.data
