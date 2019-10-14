@@ -192,28 +192,10 @@ class BinarySearchTree
     (left_depth - right_depth).abs < 1
   end
 
-<<<<<<< Updated upstream
   def prettyPrintTree(node = root, prefix="", is_left = true)
     prettyPrintTree(node.right, "#{prefix}#{is_left ? "│   " : "    "}", false) if node.right
     puts "#{prefix}#{is_left ? "└── " : "┌── "}#{node.data.to_s}"
     prettyPrintTree(node.left, "#{prefix}#{is_left ? "    " : "│   "}", true) if node.left
-=======
-  def prettyPrintTree(node, prefix="", isLeft=True)
-    unless node
-        puts "Empty Tree"
-        return
-    end
-
-    if node.right:
-        prettyPrintTree(node.right, prefix + ("│   " if isLeft else "    "), False)
-    end
-
-    print(prefix + ("└── " if isLeft else "┌── ") + str(node.val))
-
-    if node.left:
-        prettyPrintTree(node.left, prefix + ("    " if isLeft else "│   "), True)
-    end
->>>>>>> Stashed changes
   end
 
   def print_dump
