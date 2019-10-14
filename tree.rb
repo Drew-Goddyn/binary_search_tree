@@ -87,7 +87,7 @@ class BinarySearchTree
     end
   end
 
-
+# Metaprogrammed version of depth first algorithms for fun
   [:inorder,:preorder,:postorder].each do |traversal_mode|
     left_method = "traverse_#{traversal_mode}(node.left, &block)"
     right_method = "traverse_#{traversal_mode}(node.right, &block)"
@@ -182,7 +182,7 @@ class BinarySearchTree
     end
   end
 
-  def is_balanced?
+  def balanced?
     left_depth = depth(root.left)
     right_depth = depth(root.right)
     (left_depth - right_depth).abs < 1
@@ -213,7 +213,7 @@ tree = BinarySearchTree.new(array)
 
 tree.print_dump
 puts
-puts "Checking if tree is balanced: #{tree.is_balanced?}"
+puts "Checking if tree is balanced: #{tree.balanced?}"
 puts "Unbalancing the tree..."
 tree.insert(22)
 tree.insert(5235)
@@ -223,13 +223,13 @@ tree.insert(29)
 tree.insert(92)
 tree.insert(45)
 tree.insert(511)
-puts "Checking if tree is balanced: #{tree.is_balanced?}"
+puts "Checking if tree is balanced: #{tree.balanced?}"
 puts
 tree.print_dump
 puts
 puts "Rebalancing tree..."
 tree.rebalance!
-puts "checking if tree is balanced: #{tree.is_balanced?}"
+puts "checking if tree is balanced: #{tree.balanced?}"
 puts
 tree.print_dump
 
