@@ -28,7 +28,6 @@ class BinarySearchTree
   def insert(value, node = root)
     raise DuplicateInsertion, "#{value} already exists in Tree" if node.data == value
 
-    node = Node.new(value) if node.nil?
     if value < node.data
       if node.left.nil?
         node.left = Node.new(value)
@@ -67,31 +66,33 @@ class BinarySearchTree
 
 
 
-  def traverse_levelorder_recursive(current = root, queue = [], &block)
+  def levelorder_recursive(current = root, queue = [], result = [], &block)
     return if current.nil?
 
-    block.call(current)
+    block_given? ? block.call(current) : result << current.data
     queue << current.left if current.left
     queue << current.right if current.right
     current = queue.shift
-    traverse_levelorder_recursive(current, queue, &block)
+    levelorder_recursive(current, queue, result, &block)
+    result unless block_given?
   end
 
-  def traverse_levelorder_iterative(start_node = root)
+  def levelorder_iterative(start_node = root, result = [])
     queue = [start_node]
     until queue.empty?
       current = queue.shift
-      yield(current)
+      block_given? ? yield(current) : result << current.data
       queue << current.left if current.left
       queue << current.right if current.right
     end
+    result unless block_given?
   end
 
 # Metaprogrammed version of depth first algorithms for fun
   [:inorder,:preorder,:postorder].each do |traversal_mode|
-    left_method = "traverse_#{traversal_mode}(node.left, &block)"
-    right_method = "traverse_#{traversal_mode}(node.right, &block)"
-    blok = "block.call(node)"
+    left_method = "#{traversal_mode}(node.left, result, &block)"
+    right_method = "#{traversal_mode}(node.right, result, &block)"
+    blok = "block_given? ? block.call(node) : result << node.data"
 
     traversal_methods = {
       inorder:    [left_method, blok, right_method],
@@ -99,37 +100,40 @@ class BinarySearchTree
       postorder:  [left_method, right_method, blok],
     }
 
-    define_method :"traverse_#{traversal_mode}_meta" do |node = root, &block|
+    define_method :"#{traversal_mode}_meta" do |node = root, result = [], &block|
       return if node.nil?
 
       traversal_methods[traversal_mode].each{ |method| eval(method) }
-      return
+
+      return result unless block_given?
     end
   end
 
-  def traverse_inorder(node = root, &block)
+  def inorder(node = root, result = [], &block)
     return if node.nil?
 
-    traverse_inorder(node.left, &block)
-    block.call(node)
-    traverse_inorder(node.right, &block)
-
+    inorder(node.left, result, &block)
+    block_given? ? block.call(node) : result << node.data
+    inorder(node.right, result, &block)
+    result unless block_given?
   end
 
-  def traverse_preorder(node = root, &block)
+  def preorder(node = root, result = [], &block)
     return if node.nil?
 
-    block.call(node)
-    traverse_preorder(node.left, &block)
-    traverse_preorder(node.right, &block)
+    block_given? ? block.call(node) : result << node.data
+    preorder(node.left, result, &block)
+    preorder(node.right, result, &block)
+    result unless block_given?
   end
 
-  def traverse_postorder(node = root, &block)
+  def postorder(node = root, result = [], &block)
     return if node.nil?
 
-    traverse_postorder(node.left, &block)
-    traverse_postorder(node.right, &block)
-    block.call(node)
+    postorder(node.left, result, &block)
+    postorder(node.right, result, &block)
+    block_given? ? block.call(node) : result << node.data
+    return result unless block_given?
   end
 
   def find(value, node = root)
@@ -162,7 +166,7 @@ class BinarySearchTree
 
   def rebalance!
     array = []
-    traverse_levelorder_iterative {|node| array << node.data}
+    levelorder_iterative {|node| array << node.data}
     array.sort!
     @root = build_tree(array)
   end
@@ -193,14 +197,14 @@ class BinarySearchTree
       print "#{node.data} "
     end
 
-    puts "#{traverse_levelorder_recursive(&print_proc)} - levelorder recursive"
-    puts "#{traverse_levelorder_iterative(&print_proc)} - levelorder iterative"
-    puts "#{traverse_inorder(&print_proc)} - inorder"
-    puts "#{traverse_inorder_meta(&print_proc)} - inorder_meta"
-    puts "#{traverse_preorder(&print_proc)} - preorder"
-    puts "#{traverse_preorder_meta(&print_proc)} - preorder_meta"
-    puts "#{traverse_postorder(&print_proc)} - postorder"
-    puts "#{traverse_postorder_meta(&print_proc)} - postorder_meta"
+    puts "#{levelorder_recursive(&print_proc)} - levelorder recursive"
+    puts "#{levelorder_iterative(&print_proc)} - levelorder iterative"
+    puts "#{inorder(&print_proc)} - inorder"
+    puts "#{inorder_meta(&print_proc)} - inorder_meta"
+    puts "#{preorder(&print_proc)} - preorder"
+    puts "#{preorder_meta(&print_proc)} - preorder_meta"
+    puts "#{postorder(&print_proc)} - postorder"
+    puts "#{postorder_meta(&print_proc)} - postorder_meta"
   end
 end
 
@@ -210,7 +214,6 @@ array = [1,7,4,23,8,9,4,3,5,7,9,67,6345,324,6344]
 puts "Creating balanced tree from array: #{array.inspect}"
 puts
 tree = BinarySearchTree.new(array)
-
 tree.print_dump
 puts
 puts "Checking if tree is balanced: #{tree.balanced?}"
