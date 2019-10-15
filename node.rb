@@ -16,6 +16,6 @@ class Node
   end
 
   def single_parent?
-    left.nil? && !right.nil? || !left.nil? && right.nil?
+    left.nil? != right.nil?
   end
 end
