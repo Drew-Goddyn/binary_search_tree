@@ -192,24 +192,28 @@ class BinarySearchTree
     (left_depth - right_depth).abs < 1
   end
 
+<<<<<<< Updated upstream
   def prettyPrintTree(node = root, prefix="", is_left = true)
+    prettyPrintTree(node.right, "#{prefix}#{is_left ? "│   " : "    "}", false) if node.right
+    puts "#{prefix}#{is_left ? "└── " : "┌── "}#{node.data.to_s}"
+    prettyPrintTree(node.left, "#{prefix}#{is_left ? "    " : "│   "}", true) if node.left
+=======
+  def prettyPrintTree(node, prefix="", isLeft=True)
     unless node
         puts "Empty Tree"
         return
     end
 
-    if node.right
-      new_prefix = "#{prefix}#{is_left ? "│   " : "    "}"
-      prettyPrintTree(node.right, new_prefix, false)
+    if node.right:
+        prettyPrintTree(node.right, prefix + ("│   " if isLeft else "    "), False)
     end
 
-    puts "#{prefix}#{is_left ? "└── " : "┌── "}#{node.data.to_s}"
+    print(prefix + ("└── " if isLeft else "┌── ") + str(node.val))
 
-
-    if node.left
-      new_prefix = "#{prefix}#{is_left ? "    " : "│   "}"
-      prettyPrintTree(node.left, new_prefix, true)
+    if node.left:
+        prettyPrintTree(node.left, prefix + ("    " if isLeft else "│   "), True)
     end
+>>>>>>> Stashed changes
   end
 
   def print_dump
@@ -236,25 +240,28 @@ puts
 tree = BinarySearchTree.new(array)
 tree.prettyPrintTree
 # tree.print_dump
+puts
+puts "Checking if tree is balanced: #{tree.balanced?}"
+puts "Unbalancing the tree..."
+
+tree.insert(22)
+tree.insert(5235)
+tree.insert(233)
+tree.insert(451)
+tree.insert(29)
+tree.insert(92)
+tree.insert(45)
+tree.insert(511)
+puts "Checking if tree is balanced: #{tree.balanced?}"
 # puts
-# puts "Checking if tree is balanced: #{tree.balanced?}"
-# puts "Unbalancing the tree..."
-# tree.insert(22)
-# tree.insert(5235)
-# tree.insert(233)
-# tree.insert(451)
-# tree.insert(29)
-# tree.insert(92)
-# tree.insert(45)
-# tree.insert(511)
-# puts "Checking if tree is balanced: #{tree.balanced?}"
-# puts
+tree.prettyPrintTree
 # tree.print_dump
-# puts
-# puts "Rebalancing tree..."
-# tree.rebalance!
-# puts "checking if tree is balanced: #{tree.balanced?}"
-# puts
+puts
+puts "Rebalancing tree..."
+tree.rebalance!
+puts "checking if tree is balanced: #{tree.balanced?}"
+puts
+tree.prettyPrintTree
 # tree.print_dump
 
 
