@@ -1,4 +1,4 @@
-require './node.rb'
+require_relative './node.rb'
 
 class NodeNotFound < StandardError;end
 class DuplicateInsertion < StandardError;end
