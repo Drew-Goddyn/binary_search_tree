@@ -192,6 +192,26 @@ class BinarySearchTree
     (left_depth - right_depth).abs < 1
   end
 
+  def prettyPrintTree(node = root, prefix="", is_left = true)
+    unless node
+        puts "Empty Tree"
+        return
+    end
+
+    if node.right
+      new_prefix = "#{prefix}#{is_left ? "│   " : "    "}"
+      prettyPrintTree(node.right, new_prefix, false)
+    end
+
+    puts "#{prefix}#{is_left ? "└── " : "┌── "}#{node.data.to_s}"
+
+
+    if node.left
+      new_prefix = "#{prefix}#{is_left ? "    " : "│   "}"
+      prettyPrintTree(node.left, new_prefix, true)
+    end
+  end
+
   def print_dump
     print_proc = Proc.new do |node|
       print "#{node.data} "
@@ -214,26 +234,27 @@ array = [1,7,4,23,8,9,4,3,5,7,9,67,6345,324,6344]
 puts "Creating balanced tree from array: #{array.inspect}"
 puts
 tree = BinarySearchTree.new(array)
-tree.print_dump
-puts
-puts "Checking if tree is balanced: #{tree.balanced?}"
-puts "Unbalancing the tree..."
-tree.insert(22)
-tree.insert(5235)
-tree.insert(233)
-tree.insert(451)
-tree.insert(29)
-tree.insert(92)
-tree.insert(45)
-tree.insert(511)
-puts "Checking if tree is balanced: #{tree.balanced?}"
-puts
-tree.print_dump
-puts
-puts "Rebalancing tree..."
-tree.rebalance!
-puts "checking if tree is balanced: #{tree.balanced?}"
-puts
-tree.print_dump
+tree.prettyPrintTree
+# tree.print_dump
+# puts
+# puts "Checking if tree is balanced: #{tree.balanced?}"
+# puts "Unbalancing the tree..."
+# tree.insert(22)
+# tree.insert(5235)
+# tree.insert(233)
+# tree.insert(451)
+# tree.insert(29)
+# tree.insert(92)
+# tree.insert(45)
+# tree.insert(511)
+# puts "Checking if tree is balanced: #{tree.balanced?}"
+# puts
+# tree.print_dump
+# puts
+# puts "Rebalancing tree..."
+# tree.rebalance!
+# puts "checking if tree is balanced: #{tree.balanced?}"
+# puts
+# tree.print_dump
 
 
