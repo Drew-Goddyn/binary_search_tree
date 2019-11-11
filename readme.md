@@ -3,15 +3,17 @@ This is my implementation of a binary search tree in ruby.
 It creates a balanced tree where all left children are less than the root node and all right children are greater. E.g.
 
 ```
-       _9_
-     _/   \_
-  _4_       _15_
- /   \     /    \
-2     6   12    17
+│       ┌── 17
+│   ┌── 15
+│   │   └── 12
+└── 9
+    │   ┌── 6
+    └── 4
+        └── 2
 ```
 
 ## Why?
-BST's might be useful in situations where you need the benefits of both a linked list and `Array#bsearch`. A sitation where you are able to sort once, frequently need to search for a value, and frequently need to insert elements into the middle.
+BST's might be useful in situations where you need the benefits of both a linked list and `Array#bsearch`. A situation where you are able to sort once, frequently need to search for a value, and frequently need to insert elements into the middle.
 
 But lets be honest, you should probably just use a hash.
 
@@ -30,14 +32,16 @@ tree.insert(16):
 ```
 
 ```
+tree.pretty_print
 
-       _9_
-     _/   \_
-  _4_       _15_
- /   \     /    \
-2     6   12   _17
-              /
-             16
+│       ┌── 17
+│       │   └── 16
+│   ┌── 15
+│   │   └── 12
+└── 9
+    │   ┌── 6
+    └── 4
+        └── 2
 ```
 
 ```Ruby
@@ -45,11 +49,15 @@ tree.delete(15):
 ```
 
 ```
-       _9_
-     _/   \_
-  _4_       _16_
- /   \     /    \
-2     6   12   17
+tree.pretty_print
+
+│       ┌── 17
+│   ┌── 16
+│   │   └── 12
+└── 9
+    │   ┌── 6
+    └── 4
+        └── 2
 ```
 
 ### Rebalance a tree that has become unbalanced:
@@ -63,17 +71,18 @@ tree.balanced? #=> false
 ```
 
 ```
-       _9_
-     _/   \_
-  _4_       _15_
- /   \     /    \
-2     6   12    17_
-                   \_
-                     _56
-                   _/
-               _22_
-              /
-             18
+tree.pretty_print
+
+│           ┌── 56
+│           │   └── 22
+│           │       └── 18
+│       ┌── 17
+│   ┌── 15
+│   │   └── 12
+└── 9
+    │   ┌── 6
+    └── 4
+        └── 2
 ```
 
 ```Ruby
@@ -82,13 +91,18 @@ tree.balanced? #=> true
 ```
 
 ```
-       _12_
-     _/    \_
-  _4_        _18_
- /   \      /    \
-2     6_   15_   22_
-        \     \     \
-         9     17   56
+tree.pretty_print
+
+│           ┌── 56
+│       ┌── 22
+│   ┌── 18
+│   │   │   ┌── 17
+│   │   └── 15
+└── 12
+    │       ┌── 9
+    │   ┌── 6
+    └── 4
+        └── 2
 ```
 
 ### Find a node
@@ -108,12 +122,6 @@ Traverse using any of the common traversal methods
 #postorder
 ```
 
-Additionally there are metaprogrammed versions of the depth first algorithms(cause why not?)
-```
-#inorder_meta
-#preorder_meta
-#postorder_meta
-```
 Calling a traversal method will return an array of node data
 ```Ruby
 tree.levelorder_recursive #=> [9, 4, 15, 2, 6, 12, 17]
@@ -130,11 +138,8 @@ tree.print_dump
 29 7 324 3 9 67 5235 1 4 8 22 45 92 451 6344 5 23 233 511 6345  - levelorder recursive
 29 7 324 3 9 67 5235 1 4 8 22 45 92 451 6344 5 23 233 511 6345  - levelorder iterative
 1 3 4 5 7 8 9 22 23 29 45 67 92 233 324 451 511 5235 6344 6345  - inorder
-1 3 4 5 7 8 9 22 23 29 45 67 92 233 324 451 511 5235 6344 6345  - inorder_meta
 29 7 3 1 4 5 9 8 22 23 324 67 45 92 233 5235 451 511 6344 6345  - preorder
-29 7 3 1 4 5 9 8 22 23 324 67 45 92 233 5235 451 511 6344 6345  - preorder_meta
 1 5 4 3 8 23 22 9 7 45 233 92 67 511 451 6345 6344 5235 324 29  - postorder
-1 5 4 3 8 23 22 9 7 45 233 92 67 511 451 6345 6344 5235 324 29  - postorder_meta
 ```
 
 An example of adding each element to an array inorder using a block:

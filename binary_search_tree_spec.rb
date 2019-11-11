@@ -18,27 +18,21 @@ RSpec.describe BinarySearchTree do
     expect(isBST?(subject.root)).to eq(true)
   end
 
-  it "only accepts arrays of numeric values" do
-      expect{ described_class.new("1") }.to raise_error(ArgumentError)
-      expect{ described_class.new(1) }.to raise_error(ArgumentError)
-      expect{ described_class.new({first:1}) }.to raise_error(ArgumentError)
-      expect{ described_class.new(["1", 2]) }.to raise_error(ArgumentError)
-  end
-
   it "creates a balanced tree" do
     expect(subject.root.data).to eq(8)
     expect(subject.balanced?).to eq(true)
   end
 
   describe "#insert" do
-    it "inserts correctly" do
-      left_tree = subject.root.left
-      expect{subject.insert(2)}.to change{subject.depth(left_tree)}.by(1)
-      expect(subject.find(2)).to be_truthy
-    end
-
     it "raise error when inserting duplicates" do
       expect{subject.insert(3)}.to raise_error(DuplicateInsertion)
+    end
+
+    it "inserts correctly" do
+      subject.insert(2)
+      expect(subject.find(2)).to be_truthy
+      (10..20).each{ |n| subject.insert(n)}
+      expect(isBST?(subject.root)).to eq(true)
     end
   end
 
@@ -66,7 +60,68 @@ RSpec.describe BinarySearchTree do
     end
   end
 
-  
+  describe "#find" do
+    it "raises error if node not found" do
+      expect{subject.find(9999)}.to raise_error(NodeNotFound)
+    end
+
+    it "finds a node" do
+      node = subject.find(4)
+      expect(node.data).to eq(4)
+      expect(node.left.data).to eq(1)
+      expect(node.right.data).to eq(5)
+    end
+  end
+
+  describe "#min_value_node" do
+    it "returns min value node in tree" do
+      expect(subject.min_value_node.data).to eq(1)
+    end
+  end
+
+  describe "#max_value_node" do
+    it "returns max value node in tree" do
+      expect(subject.max_value_node.data).to eq(6345)
+      subject.insert(9999)
+      expect(subject.max_value_node.data).to eq(9999)
+    end
+  end
+
+  describe "#depth" do
+    it "returns depth from given node" do
+      expect(subject.depth).to eq(4)
+      expect(subject.depth(subject.root.left)).to eq(3)
+      expect(subject.depth(subject.root.right)).to eq(3)
+      subject.insert(9998)
+      subject.insert(9999)
+      expect(subject.depth).to eq(6)
+      expect(subject.depth(subject.root.left)).to eq(3)
+      expect(subject.depth(subject.root.right)).to eq(5)
+    end
+  end
+
+  context "balancing" do
+    let (:unbalanced_tree) do 
+      described_class.new(test_input).tap{ |tree| (9990..9999).each{ |n| tree.insert(n) } }
+    end
+    describe "#balanced?" do
+      it "returns true when tree balanced" do
+        expect(subject.balanced?).to eq(true)
+      end
+      it "returns false when tree unbalanced" do
+        expect(unbalanced_tree.balanced?).to eq(false)
+      end
+    end
+
+    describe "#rebalance" do
+      it "rebalances a tree" do
+        unbalanced_tree.rebalance!
+        expect(unbalanced_tree.balanced?).to eq(true)
+        expect(unbalanced_tree.root.data).to eq(6344)
+        expect(isBST?(subject.root)).to eq(true)
+      end
+    end
+  end
 
   describe "traversal methods" do
     shared_examples "a traversal method" do |traversal_methods, expected_output|

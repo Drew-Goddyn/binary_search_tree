@@ -7,9 +7,7 @@ class BinarySearchTree
   attr_reader :root
 
   def initialize(array)
-    raise ArgumentError, "Tree must be initialized with an array" unless array.is_a?(Array)
-    raise ArgumentError, "Tree must be intialized with numbers" unless array.all?{ |element| element.is_a?(Numeric) }
-
+    array = Array(array)
     array.sort!
     array.uniq!
     @root = build_tree(array)
@@ -143,13 +141,6 @@ class BinarySearchTree
     current
   end
 
-  def rebalance!
-    array = []
-    levelorder_iterative {|node| array << node.data}
-    array.sort!
-    @root = build_tree(array)
-  end
-
   def depth(node = root)
     if node.nil?
       return 0
@@ -163,6 +154,13 @@ class BinarySearchTree
         right_depth+1
       end
     end
+  end
+
+  def rebalance!
+    array = []
+    levelorder_iterative {|node| array << node.data}
+    array.sort!
+    @root = build_tree(array)
   end
 
   def balanced?
