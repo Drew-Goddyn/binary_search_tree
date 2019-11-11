@@ -190,37 +190,3 @@ class BinarySearchTree
     puts "#{postorder_meta(&print_proc)} - postorder_meta"
   end
 end
-
-### A driver to show functionality since I was too lazy to rspec it...
-# puts
-# array = [1,7,4,23,8,9,4,3,5,7,9,67,6345,324,6344]
-# puts "Creating balanced tree from array: #{array.inspect}"
-# puts
-# tree = BinarySearchTree.new(array)
-# tree.pretty_print
-# tree.print_dump
-# puts
-# puts "Checking if tree is balanced: #{tree.balanced?}"
-# puts "Unbalancing the tree..."
-
-# tree.insert(22)
-# tree.insert(5235)
-# tree.insert(233)
-# tree.insert(451)
-# tree.insert(29)
-# tree.insert(92)
-# tree.insert(45)
-# tree.insert(511)
-# puts "Checking if tree is balanced: #{tree.balanced?}"
-# puts
-# tree.pretty_print
-# tree.print_dump
-# puts
-# puts "Rebalancing tree..."
-# tree.rebalance!
-# puts "checking if tree is balanced: #{tree.balanced?}"
-# puts
-# tree.pretty_print
-# tree.print_dump
-
-
