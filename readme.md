@@ -15,23 +15,32 @@ It creates a balanced tree where all left children are less than the root node a
 ## Why?
 BST's might be useful in situations where you need the benefits of both a linked list and `Array#bsearch`. A situation where you are able to sort once, frequently need to search for a value, and frequently need to insert elements into the middle.
 
-But lets be honest, you should probably just use a hash.
+But lets be honest, in most scenarios you should probably just use a hash.
 
 ## How to use it
 
-### Pass an array to create a new tree:
+### Input will be cast to an array on initialization and must be sortable:
+#### Bad:
 
+```Ruby
+BinarySearchTree.new([1,"2"]) #=> ArgumentError: comparison of Integer with String failed
+```
+
+#### Good:
+```Ruby
+BinarySearchTree.new(5)
+BinarySearchTree.new({a:1,b:2})
+BinarySearchTree.new((1..100))
+BinarySearchTree.new([12,2,6,4,9,15,17])
+```
+
+### Insert or delete elements by value:
 ```Ruby
 tree = BinarySearchTree.new([12,2,6,4,9,15,17])
 ```
 
-### Insert or delete elements by value:
-
 ```Ruby
 tree.insert(16):
-```
-
-```
 tree.pretty_print
 
 │       ┌── 17
@@ -45,10 +54,7 @@ tree.pretty_print
 ```
 
 ```Ruby
-tree.delete(15):
-```
-
-```
+tree.delete(15)
 tree.pretty_print
 
 │       ┌── 17
