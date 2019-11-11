@@ -88,27 +88,6 @@ class BinarySearchTree
     result unless block_given?
   end
 
-# Metaprogrammed version of depth first algorithms for fun
-  [:inorder,:preorder,:postorder].each do |traversal_mode|
-    left_method = "#{traversal_mode}(node.left, result, &block)"
-    right_method = "#{traversal_mode}(node.right, result, &block)"
-    blok = "block_given? ? block.call(node) : result << node.data"
-
-    traversal_methods = {
-      inorder:    [left_method, blok, right_method],
-      preorder:   [blok, left_method, right_method],
-      postorder:  [left_method, right_method, blok],
-    }
-
-    define_method :"#{traversal_mode}_meta" do |node = root, result = [], &block|
-      return if node.nil?
-
-      traversal_methods[traversal_mode].each{ |method| eval(method) }
-
-      return result unless block_given?
-    end
-  end
-
   def inorder(node = root, result = [], &block)
     return if node.nil?
 
@@ -192,10 +171,10 @@ class BinarySearchTree
     (left_depth - right_depth).abs < 1
   end
 
-  def prettyPrintTree(node = root, prefix="", is_left = true)
-    prettyPrintTree(node.right, "#{prefix}#{is_left ? "│   " : "    "}", false) if node.right
+  def pretty_print(node = root, prefix="", is_left = true)
+    pretty_print(node.right, "#{prefix}#{is_left ? "│   " : "    "}", false) if node.right
     puts "#{prefix}#{is_left ? "└── " : "┌── "}#{node.data.to_s}"
-    prettyPrintTree(node.left, "#{prefix}#{is_left ? "    " : "│   "}", true) if node.left
+    pretty_print(node.left, "#{prefix}#{is_left ? "    " : "│   "}", true) if node.left
   end
 
   def print_dump
@@ -215,35 +194,35 @@ class BinarySearchTree
 end
 
 ### A driver to show functionality since I was too lazy to rspec it...
-puts
-array = [1,7,4,23,8,9,4,3,5,7,9,67,6345,324,6344]
-puts "Creating balanced tree from array: #{array.inspect}"
-puts
-tree = BinarySearchTree.new(array)
-tree.prettyPrintTree
-# tree.print_dump
-puts
-puts "Checking if tree is balanced: #{tree.balanced?}"
-puts "Unbalancing the tree..."
-
-tree.insert(22)
-tree.insert(5235)
-tree.insert(233)
-tree.insert(451)
-tree.insert(29)
-tree.insert(92)
-tree.insert(45)
-tree.insert(511)
-puts "Checking if tree is balanced: #{tree.balanced?}"
 # puts
-tree.prettyPrintTree
+# array = [1,7,4,23,8,9,4,3,5,7,9,67,6345,324,6344]
+# puts "Creating balanced tree from array: #{array.inspect}"
+# puts
+# tree = BinarySearchTree.new(array)
+# tree.pretty_print
 # tree.print_dump
-puts
-puts "Rebalancing tree..."
-tree.rebalance!
-puts "checking if tree is balanced: #{tree.balanced?}"
-puts
-tree.prettyPrintTree
+# puts
+# puts "Checking if tree is balanced: #{tree.balanced?}"
+# puts "Unbalancing the tree..."
+
+# tree.insert(22)
+# tree.insert(5235)
+# tree.insert(233)
+# tree.insert(451)
+# tree.insert(29)
+# tree.insert(92)
+# tree.insert(45)
+# tree.insert(511)
+# puts "Checking if tree is balanced: #{tree.balanced?}"
+# puts
+# tree.pretty_print
+# tree.print_dump
+# puts
+# puts "Rebalancing tree..."
+# tree.rebalance!
+# puts "checking if tree is balanced: #{tree.balanced?}"
+# puts
+# tree.pretty_print
 # tree.print_dump
 
 
